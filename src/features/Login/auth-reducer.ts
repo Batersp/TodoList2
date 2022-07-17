@@ -2,6 +2,7 @@ import {SetAppErrorActionType, setAppStatusAC, SetAppStatusActionType} from "../
 import {Dispatch} from "redux";
 import {authAPI, LoginParamsType} from "../../api/todolists-api";
 import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
+import {setClearAC, SetClearACType} from "../TodolistsList/tasks-reducer";
 
 const SET_IS_LOGGED_IN = 'SET_IS_LOGGED_IN'
 
@@ -9,7 +10,7 @@ const initialState: InitialStateType = {
     isLoggedIn: false
 }
 
-export const authReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
+export const authReducer = (state: InitialStateType = initialState, action: AuthActionsType): InitialStateType => {
     switch (action.type) {
         case 'SET_IS_LOGGED_IN': {
             return {...state, isLoggedIn: action.payload.value}
@@ -26,7 +27,7 @@ export const setIsLoggedInAC = (value: boolean) => {
     } as const
 }
 
-export const loginTC = (data: LoginParamsType) => (dispatch: Dispatch<ActionsType>) => {
+export const loginTC = (data: LoginParamsType) => (dispatch: Dispatch<AuthActionsType>) => {
     dispatch(setAppStatusAC('loading'))
     authAPI.login(data)
         .then((res) => {
@@ -43,13 +44,14 @@ export const loginTC = (data: LoginParamsType) => (dispatch: Dispatch<ActionsTyp
 }
 
 
-export const logoutTC = () => (dispatch: Dispatch<ActionsType>) => {
+export const logoutTC = () => (dispatch: Dispatch<AuthActionsType>) => {
     dispatch(setAppStatusAC('loading'))
     authAPI.logout()
         .then(res => {
             if (res.data.resultCode === 0) {
                 dispatch(setIsLoggedInAC(false))
                 dispatch(setAppStatusAC('succeeded'))
+                dispatch(setClearAC())
             } else {
                 handleServerAppError(res.data, dispatch)
             }
@@ -67,5 +69,5 @@ export type InitialStateType = {
 type SetIsLoggedInACType = ReturnType<typeof setIsLoggedInAC> | SetAppStatusActionType | SetAppErrorActionType
 
 
-type ActionsType = SetIsLoggedInACType
+export type AuthActionsType = SetIsLoggedInACType | SetClearACType
 
