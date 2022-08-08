@@ -1,7 +1,7 @@
 import {todolistsAPI, TodolistType} from '../../api/todolists-api'
 import {Dispatch} from 'redux'
 import {RequestStatusType, setAppStatusAC} from '../../app/app-reducer'
-import {fetchTasksTC, SetClearACType} from "./tasks-reducer";
+import {fetchTasksTC} from "./tasks-reducer";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 
